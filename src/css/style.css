@@ -1,0 +1,608 @@
+/* 全体のスタイル */
+:root {
+  --primary-color: #5c6bc0;
+  --primary-light: #8e99f3;
+  --primary-dark: #26418f;
+  --secondary-color: #26c6da;
+  --secondary-light: #6ff9ff;
+  --secondary-dark: #0095a8;
+  --text-color: #37474f;
+  --text-light: #78909c;
+  --background-color: #f5f7fa;
+  --card-color: #ffffff;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --success-color: #4caf50;
+  --animation-duration: 0.3s;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background: linear-gradient(135deg, var(--background-color), #e1e5ee);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 32px;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  letter-spacing: 0.5px;
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* ローダー */
+.loader {
+  text-align: center;
+  padding: 30px;
+  font-size: 16px;
+  color: var(--text-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 40px 0;
+}
+
+.loader::after {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 48px;
+  margin-top: 16px;
+  border-radius: 50%;
+  border: 3px solid var(--primary-light);
+  border-top-color: var(--primary-dark);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 現在の天気カード */
+.weather-card {
+  background: var(--card-color);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  padding: 30px;
+  margin-bottom: 32px;
+  transform: translateY(0);
+  transition: transform var(--animation-duration), box-shadow var(--animation-duration);
+  animation: slideUp 0.6s ease-out;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.weather-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.location {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.location h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.location h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(to right, var(--primary-light), var(--secondary-light));
+  border-radius: 3px;
+}
+
+.weather-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.weather-icon {
+  width: 100px;
+  height: 100px;
+  margin-right: 24px;
+  transition: transform 0.3s ease;
+}
+
+.weather-icon:hover {
+  transform: scale(1.1);
+}
+
+.weather-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+.weather-details {
+  flex: 1;
+}
+
+.temperature {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--primary-dark);
+  display: flex;
+  align-items: baseline;
+}
+
+.temperature span {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.condition {
+  font-size: 18px;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.weather-stats {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+  border-radius: 12px;
+  min-width: 100px;
+  backdrop-filter: blur(5px);
+  transition: transform var(--animation-duration);
+}
+
+.stat:hover {
+  transform: translateY(-3px);
+}
+
+.stat-label {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 6px;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+/* 週間予報 */
+#forecast h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  text-align: center;
+}
+
+.forecast-container {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-bottom: 32px;
+  padding: 10px 2px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.forecast-container::-webkit-scrollbar {
+  display: none;
+}
+
+.forecast-item {
+  min-width: 110px;
+  text-align: center;
+  padding: 16px 10px;
+  background: var(--card-color);
+  border-radius: 14px;
+  margin-right: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all var(--animation-duration);
+  animation: slideUp 0.6s ease-out;
+  animation-delay: calc(var(--animation-index, 0) * 0.1s);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.forecast-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.forecast-day {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.forecast-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 12px;
+  transition: transform 0.3s ease;
+}
+
+.forecast-icon:hover {
+  transform: scale(1.1);
+}
+
+.forecast-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.forecast-temp {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+/* ボタン */
+.actions {
+  text-align: center;
+  margin-bottom: 32px;
+  animation: fadeIn 0.8s ease-in-out;
+  animation-delay: 0.6s;
+  animation-fill-mode: both;
+}
+
+.btn {
+  border: none;
+  border-radius: 30px;
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.5s;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+  box-shadow: 0 6px 20px rgba(92, 107, 192, 0.4);
+}
+
+/* ボタンの状態表示 */
+.btn-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #9e9e9e, #757575);
+}
+
+.btn-disabled:hover {
+  background: linear-gradient(135deg, #9e9e9e, #757575);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  transform: none;
+}
+
+.btn-disabled::before {
+  display: none;
+}
+
+.btn-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  pointer-events: none;
+}
+
+.btn-loading:hover {
+  transform: none;
+}
+
+.btn-loader {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s linear infinite;
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark));
+  color: white;
+  margin-left: 10px;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, var(--secondary-dark), var(--secondary-color));
+  box-shadow: 0 6px 20px rgba(38, 198, 218, 0.4);
+}
+
+/* 更新ボタンアニメーション */
+.rotating {
+  animation: rotate 1s linear;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ステータス表示 */
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.last-updated {
+  display: flex;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 6px 12px;
+  border-radius: 16px;
+  margin-right: 8px;
+}
+
+.last-updated:before {
+  content: '🕒';
+  margin-right: 6px;
+}
+
+.environment-info {
+  display: flex;
+  align-items: center;
+}
+
+/* 操作ボタングループ */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--card-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.icon-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.icon-button:active {
+  transform: scale(0.95);
+}
+
+.icon-button i {
+  font-size: 18px;
+  color: var(--primary-color);
+}
+
+/* トーストメッセージ */
+.error-toast, .success-toast {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-width: 90%;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.error-toast {
+  background-color: rgba(244, 67, 54, 0.9);
+  color: white;
+}
+
+.success-toast {
+  background-color: rgba(76, 175, 80, 0.9);
+  color: white;
+}
+
+.toast-icon {
+  margin-right: 12px;
+  font-weight: bold;
+}
+
+/* フッター */
+footer {
+  text-align: center;
+  padding-top: 20px;
+  font-size: 14px;
+  color: var(--text-light);
+  animation: fadeIn 0.8s ease-in-out;
+  animation-delay: 0.8s;
+  animation-fill-mode: both;
+}
+
+footer p {
+  background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+/* エラーメッセージ */
+.error-message {
+  color: #f44336;
+  text-align: center;
+  padding: 20px;
+  background-color: rgba(244, 67, 54, 0.1);
+  border-radius: 12px;
+  margin: 20px 0;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 480px) {
+  .container {
+    padding: 16px;
+  }
+  
+  .weather-card {
+    padding: 20px;
+  }
+  
+  .temperature {
+    font-size: 36px;
+  }
+  
+  .forecast-item {
+    min-width: 90px;
+    padding: 12px 8px;
+  }
+  
+  .weather-stats {
+    flex-wrap: wrap;
+  }
+  
+  .stat {
+    min-width: 80px;
+    margin: 4px;
+  }
+}
+
+/* ダークモードサポート */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #121212;
+    --card-color: #1e1e1e;
+    --text-color: #e0e0e0;
+    --text-light: #9e9e9e;
+    --shadow-color: rgba(0, 0, 0, 0.2);
+  }
+  
+  body {
+    background: linear-gradient(135deg, #121212, #1f1f1f);
+  }
+  
+  .weather-card, .forecast-item {
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .weather-stats {
+    border-top-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .stat {
+    background: linear-gradient(135deg, rgba(40, 40, 40, 0.7), rgba(30, 30, 30, 0.3));
+  }
+  
+  .weather-icon img, .forecast-icon img {
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+  }
+} 

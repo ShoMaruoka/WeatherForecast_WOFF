@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>天気予報</title>
+  <link rel="stylesheet" href="src/css/style.css">
+  <!-- WOFF SDK -->
+  <script charset="utf-8" src="https://static.worksmobile.net/static/wm/woff/edge/3.6.2/sdk.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>天気予報</h1>
+    </header>
+    
+    <main>
+      <section id="current-weather">
+        <div class="loader" id="loader">読み込み中...</div>
+        <div class="weather-card" id="weather-card" style="display: none;">
+          <div class="location">
+            <h2 id="location-name">東京</h2>
+          </div>
+          <div class="weather-info">
+            <div class="weather-icon">
+              <img id="weather-icon" src="" alt="天気アイコン">
+            </div>
+            <div class="weather-details">
+              <div class="temperature">
+                <span id="current-temp">--</span>°C
+              </div>
+              <div class="condition">
+                <span id="weather-condition">--</span>
+              </div>
+            </div>
+          </div>
+          <div class="weather-stats">
+            <div class="stat">
+              <span class="stat-label">湿度</span>
+              <span class="stat-value" id="humidity">--%</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">風速</span>
+              <span class="stat-value" id="wind-speed">--km/h</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="forecast">
+        <h2>週間予報</h2>
+        <div class="forecast-container" id="forecast-container">
+          <!-- 週間予報がここに動的に挿入されます -->
+        </div>
+      </section>
+
+      <section class="actions">
+        <button id="send-to-talk" class="btn btn-primary">トークに送信</button>
+      </section>
+    </main>
+
+    <footer>
+      <p>LINE WORKS 天気予報 WOFF</p>
+    </footer>
+  </div>
+
+  <!-- スクリプト -->
+  <script src="src/js/api/weather.js"></script>
+  <script src="src/js/utils/helpers.js"></script>
+  <script src="src/js/views/weatherView.js"></script>
+  <script src="src/js/index.js"></script>
+</body>
+</html> 
