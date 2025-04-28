@@ -43,6 +43,44 @@ const Helpers = (function() {
   }
   
   /**
+   * 指定したIDの要素のテキストを設定する
+   * @param {string} elementId - 対象要素のID
+   * @param {string} text - 設定するテキスト
+   */
+  function setText(elementId, text) {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.textContent = text;
+    }
+  }
+  
+  /**
+   * 指定したIDの要素の属性を設定する
+   * @param {string} elementId - 対象要素のID
+   * @param {string} attributeName - 属性名
+   * @param {string} value - 属性値
+   */
+  function setAttribute(elementId, attributeName, value) {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.setAttribute(attributeName, value);
+    }
+  }
+  
+  /**
+   * 指定したIDの要素の子要素をすべて削除する
+   * @param {string} elementId - 対象要素のID
+   */
+  function clearChildren(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+      while (element.firstChild) {
+        element.removeChild(element.firstChild);
+      }
+    }
+  }
+  
+  /**
    * 表示非表示を切り替える
    * @param {string} elementId - 対象要素のID
    * @param {boolean} show - 表示するかどうか
@@ -78,6 +116,23 @@ const Helpers = (function() {
     }
     
     return `${month}月${day}日（${weekday}）`;
+  }
+  
+  /**
+   * 日付から日本語の曜日を取得
+   * @param {Date|number} date - 日付オブジェクトまたはUnixタイムスタンプ
+   * @returns {string} 日本語の曜日
+   */
+  function getJapaneseDayOfWeek(date) {
+    const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+    
+    // Dateオブジェクトに変換
+    const dateObj = date instanceof Date ? date : new Date(typeof date === 'number' ? date * 1000 : date);
+    
+    // 曜日を取得（0:日曜日、1:月曜日...）
+    const dayIndex = dateObj.getDay();
+    
+    return weekdays[dayIndex];
   }
   
   /**
@@ -310,8 +365,12 @@ const Helpers = (function() {
   // 公開API
   return {
     showError,
+    setText,
+    setAttribute,
+    clearChildren,
     toggleDisplay,
     formatDate,
+    getJapaneseDayOfWeek,
     kelvinToCelsius,
     formatWindDirection,
     formatVisibility,
