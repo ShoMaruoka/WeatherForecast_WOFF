@@ -339,7 +339,7 @@
     return new Promise((resolve, reject) => {
       try {
   // WOFF IDの設定
-  const WOFF_ID = 'YOUR_WOFF_ID'; // ここに実際のWOFF IDを設定
+  const WOFF_ID = 'DXwa5Y8_qG-qRGko8omaAQ'; // ここに実際のWOFF IDを設定
   
   // デフォルトの都市
   const DEFAULT_CITY = 'Tokyo';
