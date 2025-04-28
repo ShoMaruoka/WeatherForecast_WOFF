@@ -2,342 +2,12 @@
  * 天気予報WOFF アプリケーション
  */
 (function() {
-  import { getWeatherData } from './weather.js';
-  import { formatWeatherData } from './format.js';
-  import { renderWeatherCard } from './ui.js';
+  // import文を削除 - これがエラーの原因です
 
   // 状態管理変数
   let weatherData = null;
   let isSending = false;
-
-  // DOMが読み込まれた後に実行
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log('Weather Forecast App initialized');
-    
-    // 環境情報を更新
-    updateEnvironmentInfo();
-    
-    // 天気データを読み込む
-    loadWeatherData();
-    
-    // 更新ボタンのイベントリスナーを設定
-    const refreshButton = document.getElementById('refresh-button');
-    if (refreshButton) {
-      refreshButton.addEventListener('click', handleRefresh);
-    }
-    
-    // 送信ボタンのイベントリスナーを設定
-    const sendButton = document.getElementById('send-button');
-    if (sendButton) {
-      sendButton.addEventListener('click', handleSendWeatherToTalk);
-    }
-  });
-
-  /**
-   * 環境情報を更新し、UIに表示する
-   */
-  function updateEnvironmentInfo() {
-    const infoContainer = document.createElement('div');
-    infoContainer.className = 'environment-info';
-    
-    const environmentBadge = document.createElement('span');
-    environmentBadge.className = 'badge';
-    
-    // LINE WORKSクライアント内で実行されているか確認
-    const isInLINEWORKS = typeof woff !== 'undefined';
-    
-    if (isInLINEWORKS) {
-      environmentBadge.textContent = 'LINE WORKS';
-      environmentBadge.classList.add('badge-success');
-    } else {
-      environmentBadge.textContent = 'ブラウザ';
-      environmentBadge.classList.add('badge-warning');
-    }
-    
-    infoContainer.appendChild(environmentBadge);
-    
-    // 送信ボタンの状態を更新
-    const sendButton = document.getElementById('send-button');
-    if (sendButton) {
-      if (!isInLINEWORKS) {
-        sendButton.classList.add('btn-disabled');
-        sendButton.title = 'LINE WORKSクライアント内でのみ利用できます';
-      } else {
-        sendButton.classList.remove('btn-disabled');
-        sendButton.title = '天気情報をトークルームに送信';
-      }
-    }
-    
-    // 既存のステータスバーに追加
-    const statusBar = document.querySelector('.status-bar');
-    if (statusBar) {
-      // 既存の環境情報を削除
-      const existingInfo = statusBar.querySelector('.environment-info');
-      if (existingInfo) {
-        existingInfo.remove();
-      }
-      statusBar.appendChild(infoContainer);
-    } else {
-      // ステータスバーがなければ作成
-      const newStatusBar = document.createElement('div');
-      newStatusBar.className = 'status-bar';
-      newStatusBar.appendChild(infoContainer);
-      
-      const container = document.querySelector('.container');
-      const weatherCard = document.querySelector('.weather-card');
-      if (container && weatherCard) {
-        container.insertBefore(newStatusBar, weatherCard);
-      }
-    }
-  }
-
-  /**
-   * 天気データを読み込み、UIを更新する
-   */
-  async function loadWeatherData() {
-    try {
-      // ローディング表示
-      const weatherCard = document.querySelector('.weather-card');
-      if (weatherCard) {
-        weatherCard.classList.add('loading');
-      }
-      
-      // 天気データを取得
-      weatherData = await getWeatherData();
-      console.log('Weather data loaded:', weatherData);
-      
-      // フォーマットして表示
-      const formattedData = formatWeatherData(weatherData);
-      renderWeatherCard(formattedData);
-      
-      // 最終更新時間を更新
-      updateLastUpdatedTime();
-      
-      // ローディング表示を削除
-      if (weatherCard) {
-        weatherCard.classList.remove('loading');
-      }
-    } catch (error) {
-      console.error('Failed to load weather data:', error);
-      
-      // エラーメッセージを表示
-      const errorElement = document.getElementById('error-message');
-      if (errorElement) {
-        errorElement.textContent = '天気データの読み込みに失敗しました。';
-        errorElement.style.display = 'block';
-      }
-      
-      // ローディング表示を削除
-      const weatherCard = document.querySelector('.weather-card');
-      if (weatherCard) {
-        weatherCard.classList.remove('loading');
-      }
-    }
-  }
-
-  /**
-   * 最終更新時間を更新する
-   */
-  function updateLastUpdatedTime() {
-    const now = new Date();
-    const timeString = now.toLocaleTimeString('ja-JP');
-    
-    let lastUpdatedElement = document.querySelector('.last-updated');
-    
-    if (!lastUpdatedElement) {
-      // 最終更新時間の要素がなければ作成
-      lastUpdatedElement = document.createElement('div');
-      lastUpdatedElement.className = 'last-updated';
-      
-      // ステータスバーに追加
-      const statusBar = document.querySelector('.status-bar');
-      if (statusBar) {
-        statusBar.prepend(lastUpdatedElement);
-      } else {
-        // ステータスバーがなければ作成
-        const newStatusBar = document.createElement('div');
-        newStatusBar.className = 'status-bar';
-        newStatusBar.appendChild(lastUpdatedElement);
-        
-        const container = document.querySelector('.container');
-        const weatherCard = document.querySelector('.weather-card');
-        if (container && weatherCard) {
-          container.insertBefore(newStatusBar, weatherCard);
-        }
-      }
-    }
-    
-    lastUpdatedElement.textContent = `最終更新: ${timeString}`;
-  }
-
-  /**
-   * 更新ボタンのクリックハンドラ
-   */
-  function handleRefresh() {
-    const refreshButton = document.getElementById('refresh-button');
-    
-    // ボタンに回転アニメーションを追加
-    if (refreshButton) {
-      refreshButton.classList.add('rotating');
-      
-      // アニメーション終了後にクラスを削除
-      setTimeout(() => {
-        refreshButton.classList.remove('rotating');
-      }, 1000);
-    }
-    
-    // 天気データを再読み込み
-    loadWeatherData();
-  }
-
-  /**
-   * トークルームへの送信ボタンのクリックハンドラ
-   */
-  async function handleSendWeatherToTalk() {
-    // 送信中または非LINE WORKS環境の場合は何もしない
-    if (isSending || typeof woff === 'undefined') {
-      return;
-    }
-    
-    const sendButton = document.getElementById('send-button');
-    
-    try {
-      // 送信中の状態にする
-      isSending = true;
-      
-      if (sendButton) {
-        sendButton.classList.add('btn-loading');
-        sendButton.innerHTML = '<span class="btn-loader"></span>送信中...';
-      }
-      
-      // 天気データがない場合は取得
-      if (!weatherData) {
-        await loadWeatherData();
-      }
-      
-      // フォーマットされた天気データを取得
-      const formattedData = formatWeatherData(weatherData);
-      
-      // WOFF SDKを使ってトークルームにメッセージを送信
-      const message = createWeatherMessage(formattedData);
-      
-      // LINE WORKS SDKを使った送信処理
-      await sendMessageToTalk(message);
-      
-      // 成功メッセージを表示
-      showSuccessToast('天気情報をトークルームに送信しました');
-      
-    } catch (error) {
-      console.error('Failed to send weather data to talk:', error);
-      
-      // エラーメッセージを表示
-      showErrorToast('送信に失敗しました: ' + error.message);
-      
-    } finally {
-      // 送信状態を解除
-      isSending = false;
-      
-      if (sendButton) {
-        sendButton.classList.remove('btn-loading');
-        sendButton.textContent = 'トークに送信';
-      }
-    }
-  }
-
-  /**
-   * 天気データからメッセージを作成
-   * @param {Object} formattedWeather - フォーマットされた天気データ
-   * @returns {Object} - LINE WORKSのメッセージオブジェクト
-   */
-  function createWeatherMessage(formattedWeather) {
-    // 天気アイコンのURL
-    const iconUrl = formattedWeather.iconUrl || './images/weather/unknown.png';
-    
-    // 現在地と日付
-    const locationDate = `${formattedWeather.cityName} - ${formattedWeather.date}`;
-    
-    // 天気情報のテキスト
-    const weatherText = [
-      `${formattedWeather.description}`,
-      `🌡️ 気温: ${formattedWeather.temperature}°C (体感: ${formattedWeather.feelsLike}°C)`,
-      `💧 湿度: ${formattedWeather.humidity}%`,
-      `🌬️ 風: ${formattedWeather.windSpeed}m/s (${formattedWeather.windDirection})`,
-      `☁️ 雲量: ${formattedWeather.clouds}%`,
-      `👁️ 視界: ${formattedWeather.visibility}km`
-    ].join('\n');
-    
-    // LINE WORKSのFlexメッセージ形式のオブジェクトを作成
-    const message = {
-      contentType: 'flex',
-      contentValue: {
-        type: 'bubble',
-        header: {
-          type: 'box',
-          layout: 'vertical',
-          contents: [
-            {
-              type: 'text',
-              text: '天気予報',
-              weight: 'bold',
-              size: 'xl',
-              color: '#ffffff'
-            },
-            {
-              type: 'text',
-              text: locationDate,
-              size: 'sm',
-              color: '#ffffff',
-              margin: 'md'
-            }
-          ],
-          backgroundColor: '#5c6bc0'
-        },
-        hero: {
-          type: 'image',
-          url: iconUrl,
-          size: 'lg',
-          aspectRatio: '1:1',
-          aspectMode: 'fit'
-        },
-        body: {
-          type: 'box',
-          layout: 'vertical',
-          contents: [
-            {
-              type: 'text',
-              text: weatherText,
-              wrap: true,
-              size: 'md'
-            }
-          ]
-        },
-        footer: {
-          type: 'box',
-          layout: 'vertical',
-          contents: [
-            {
-              type: 'text',
-              text: '※ OpenWeatherMapのデータを元に作成',
-              size: 'xs',
-              color: '#aaaaaa',
-              align: 'center'
-            }
-          ]
-        }
-      }
-    };
-    
-    return message;
-  }
-
-  /**
-   * LINE WORKS SDKを使ってトークルームにメッセージを送信
-   * @param {Object} message - 送信するメッセージオブジェクト
-   * @returns {Promise} - 送信結果のPromise
-   */
-  async function sendMessageToTalk(message) {
-    return new Promise((resolve, reject) => {
-      try {
+  
   // WOFF IDの設定
   const WOFF_ID = 'DXwa5Y8_qG-qRGko8omaAQ'; // ここに実際のWOFF IDを設定
   
@@ -347,10 +17,25 @@
   // 現在の天気データとフォーキャストデータ
   let currentWeatherData = null;
   let forecastData = null;
-  
-  // 送信状態の管理
-  let isSending = false;
-  
+
+  // DOMが読み込まれた後に実行
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('Weather Forecast App initialized');
+    
+    // WOFF初期化を確認
+    if (typeof woff !== 'undefined') {
+      // アプリの初期化
+      init();
+    } else {
+      console.error('WOFF SDKが読み込まれていません');
+      // エラーメッセージ表示
+      const loaderElement = document.getElementById('loader');
+      if (loaderElement) {
+        loaderElement.textContent = 'WOFF SDKの読み込みに失敗しました';
+      }
+    }
+  });
+
   /**
    * アプリケーションの初期化
    */
@@ -378,7 +63,7 @@
       Helpers.showError(`WOFF初期化エラー: ${err.message}`);
     });
   }
-  
+
   /**
    * 実行環境の情報を表示
    */
@@ -655,7 +340,4 @@
       }, 300);
     }, 3000);
   }
-  
-  // DOMContentLoaded イベントでアプリを初期化
-  document.addEventListener('DOMContentLoaded', init);
 })(); 
