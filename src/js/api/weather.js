@@ -3,7 +3,7 @@
  */
 const WeatherAPI = (function() {
   // OpenWeatherMap APIの設定
-  const API_KEY = 'YOUR_API_KEY'; // ここに実際のAPIキーを設定してください
+  const API_KEY = 'afd02e0c51a74925577807b99eca2149'; // ここに実際のAPIキーを設定してください
   const BASE_URL = 'https://api.openweathermap.org/data/2.5';
   
   // APIリクエストタイムアウト設定（ミリ秒）
